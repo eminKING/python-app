@@ -1,31 +1,22 @@
 pipeline {
     agent any
-
+    environment {
+     ANSIBLE_PRIVATE_KEY=credentials('ssh-key')   
+    }
     stages {
-        stage("TEST") {
+        stage('Build and Push') {
             steps {
-                echo "---- Test ----"
-            }
-        }
-        stage("Build") {
-            steps {
-                echo "---- Build ----"
-                sh "cd simple_python_app && docker build -t emin123456789/pipline:$BUILD_ID ."
-            }
-        }
-        stage("Push DockerHUB") {
-            steps {
-                echo "---- Push DockerHUB ---- "
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-emin', passwordVariable: 'password', usernameVariable: 'emin')]) {
-                sh "docker login -u $emin -p $password"
-                sh "docker push emin123456789/pipline:$BUILD_ID"
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-emin', passwordVariable: 'psswd', usernameVariable: 'emin')]) {
+                    sh "docker build -t emin123456789/sharks:v$BUILD_ID . "
+                    sh "docker push emin123456789/sharks:v$BUILD_ID"
                 }
             }
         }
-        stage("Deploy") {
+        stage('Deploy') {
             steps {
-                echo "---- Deploy ----"
-                sh "docker run -d --name flask-app-$BUILD_ID -p 80$BUILD_ID:8080 emin123456789/pipline:$BUILD_ID"
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-emin', passwordVariable: 'psswd', usernameVariable: 'emin')]) {
+                    sh "ansible-playbook playbook.yml -u ansible --private-key=ANSIBLE_PRIVATE_KEY -e password=$psswd -e username=$emin -e BUILD_ID=$BUILD_ID --become -i inventory"   
+                }
             }
         }
     }
