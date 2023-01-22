@@ -8,14 +8,14 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-emin', passwordVariable: 'psswd', usernameVariable: 'emin')]) {
                  sh "docker build -t emin123456789/sharks:v$BUILD_ID ."
-                 sh "docker push emin123456789/sharks:v$BUILD_ID"
+                 sh "docker push emin123456789/sharks:v$BUILD_ID"   
                 }
             }
         }
         stage('Deploy') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-emin', passwordVariable: 'psswd', usernameVariable: 'emin')]) {
-                 sh "ansible-playbook playbook.yml -u ansible --private-key=ANSIBLE_PRIVATE_KEY -e password=$psswd -e username=$emin -e BUILD_ID=$BUILD_ID --become -i inventory"   
+                 sh "ansible-playbook playbook.yml -u ansible --private-key=ANSIBLE_PRIVATE_KEY -e username=$emin -e password=$psswd -e BUILD_ID=$BUILD_ID --become -i inventory"   
                 }
             }
         }
