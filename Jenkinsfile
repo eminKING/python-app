@@ -3,6 +3,9 @@ pipeline {
     environment {
      ANSIBLE_PRIVATE_KEY=credentials('ssh-key')   
     }
+    triggergs {
+     pollSCM '* * * * *'
+    }
     stages {
         stage('Build and Push') {
             steps {
