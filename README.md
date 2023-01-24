@@ -1,6 +1,6 @@
 # python-app
 
-// chmod 600 id_rsa 
+// chmod 600 id_rsa (in user Jenkins)
 
 // https://github.com/rufatzakirov/nodejs-sharks
 
