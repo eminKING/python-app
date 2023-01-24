@@ -10,8 +10,8 @@ pipeline {
         stage('Build and Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-emin', passwordVariable: 'psswd', usernameVariable: 'emin')]) {
-                 sh "docker build -t emin123456789/sharks:v$BUILD_ID ."
-                 sh "docker push emin123456789/sharks:v$BUILD_ID"   
+                 sh "docker build -t emin123456789/python:v$BUILD_ID ."
+                 sh "docker push emin123456789/python:v$BUILD_ID"   
                 }
             }
         }
